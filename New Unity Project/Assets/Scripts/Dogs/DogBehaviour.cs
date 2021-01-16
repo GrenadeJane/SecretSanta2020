@@ -20,11 +20,12 @@ public class DogBehaviour : PlayerInteraction
     }
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         StartCoroutine("ChangeDirection");
         SetNextTimeDig();
         playerState = PlayerState.PS_NONE;
+        base.Start();
     }
 
     // Update is called once per frame

@@ -137,13 +137,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4cca9afea9763499f61d2528137f7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeForDigging: 3
+  timeForDigging: 2
   timeForPeeing: 2
   colorPlayer: {r: 0.0012320258, g: 0.9716981, b: 0, a: 1}
   CurrentBoneDistance: {fileID: 0}
   BoneCarried: {fileID: 0}
   playerState: 5
-  speed: 250
+  Score: 0
+  speed: 50
   Direction: {x: 0, y: 0}
 --- !u!95 &5159067453695310372
 Animator:

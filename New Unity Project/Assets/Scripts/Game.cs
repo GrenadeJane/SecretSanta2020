@@ -14,13 +14,17 @@ public class Game : MonoBehaviour
     }
 
     public static Game Singleton;
+    public ScoreManager ScoreManager;
 
     public GameObject   MainTitlePanel;
     public GameObject   TimePanel;
+    public GameObject   ScorePanel;
 
     public MapHelper    MapHelper;
     public GameObject   DogPrefab;
     public GameObject   PlayerPrefab;
+
+    public List<PlayerInteraction> Players;
 
     public  Text TimeText;
     public  Text TimerText;
@@ -41,13 +45,14 @@ public class Game : MonoBehaviour
         _gameState = GameState.GS_MENU;
 
         TimePanel.SetActive(false);
+        ScorePanel.SetActive(false);
 
         StartGame();
     }
 
     string GetTime()
     {
-        float timer = TimeAGame - Time.time - TimeStartGame;
+        float timer = TimeAGame - (Time.time - TimeStartGame);
         float minutes = Mathf.Floor(timer / 60);
         float seconds = Mathf.RoundToInt(timer % 60);
 
@@ -68,7 +73,6 @@ public class Game : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TimerText.text = GetTime();
 
         switch (_gameState)
         {
@@ -79,9 +83,22 @@ public class Game : MonoBehaviour
                 }
                 break;
             case GameState.GS_GAME:
+                {
+                    TimerText.text = GetTime();
+                    float timer = TimeAGame - (Time.time - TimeStartGame);
+                    if (TimeStartGame != -1 && timer <= 0)
+                    {
+                       SetState(GameState.GS_SCORE);                    
+                    }
+                }  
                 break;
             case GameState.GS_SCORE:
-                break;
+                if (Input.anyKeyDown)
+                {
+                    SetState(GameState.GS_TIMER);
+                    ScorePanel.SetActive(false);
+                }
+                    break;
             case GameState.GS_TIMER:
                 {
 
@@ -107,9 +124,12 @@ public class Game : MonoBehaviour
                 break;
 
             case GameState.GS_SCORE:
+                ShowScore();
                 break;
             case GameState.GS_TIMER:
                 {
+                    TimeStartGame = -1;
+
                     if (_gameState == GameState.GS_MENU)
                     {
                         MainTitlePanel.SetActive(false);
@@ -126,18 +146,23 @@ public class Game : MonoBehaviour
         _gameState = newState;
     }
 
+    void ShowScore()
+	{
+        BoneManager.Singleton.GetPoints();
+        ScoreManager.ShowScore();
+        ScorePanel.SetActive(true);
+        TimePanel.SetActive(false);
+
+        //foreach (PlayerInteraction p in Players)
+        //{
+        //    DestroyImmediate(p.gameObject);        
+        //}
+    }
+
     IEnumerator Timer()
     {
         TimeText.text = "Ready ? ";
         yield return new WaitForSeconds(0.75f);
-        TimeText.text = "3";
-        yield return new WaitForSeconds(0.5f);
-
-        TimeText.text = "2";
-        yield return new WaitForSeconds(0.5f);
-
-        TimeText.text = "1";
-        yield return new WaitForSeconds(0.5f);
   
         TimeText.text = "Let's Gooooo ! ";
         yield return new WaitForSeconds(0.5f);
@@ -152,7 +177,8 @@ public class Game : MonoBehaviour
 
     void SpawnPlayer()
     {
-        GameObject.Instantiate(PlayerPrefab, MapHelper.Singleton.spawnPlayerPosition, Quaternion.identity);
+        GameObject p = GameObject.Instantiate(PlayerPrefab, MapHelper.Singleton.spawnPlayerPosition, Quaternion.identity);
+        Players.Add(p.GetComponent<PlayerInteraction>());
     }
 
     void SpawnDogs()
@@ -161,7 +187,8 @@ public class Game : MonoBehaviour
         {
             if (position == Vector2.zero) continue;
 
-            GameObject.Instantiate(DogPrefab, position, Quaternion.identity);
+            GameObject p = GameObject.Instantiate(DogPrefab, position, Quaternion.identity);
+            Players.Add(p.GetComponent<PlayerInteraction>());
         }
     }
 }

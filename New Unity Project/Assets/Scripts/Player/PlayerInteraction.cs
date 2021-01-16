@@ -27,16 +27,33 @@ public class PlayerInteraction : MonoBehaviour
     public Bone CurrentBoneDistance;
     public Bone BoneCarried;
     public PlayerState playerState = PlayerState.PS_NONE;
+
+    public float Score;
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         playerState = PlayerState.PS_NONE;
+        SetColor();
     }
     protected virtual void Awake()
     {
         animatorComponent = GetComponent<Animator>();
         SoundManagerComponent = GetComponent<SoundManager>();
     }
+
+    public void SetColor()
+    {
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        Color color = new Color();
+        color.r = Random.Range(0, 255);
+        color.g = Random.Range(0, 255);
+        color.b = Random.Range(0, 255);
+        color.a = 255;
+
+        colorPlayer = new Color(color.r/255,  color.g / 255, color.b / 255,1);
+        renderer.color = new Color(color.r / 255, color.g / 255, color.b / 255, 1);
+    }
+
     // Update is called once per frame
     void Update()
     {

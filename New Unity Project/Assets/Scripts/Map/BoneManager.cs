@@ -65,27 +65,21 @@ public class BoneManager : MonoBehaviour
         bone.Burried(true);
     }
 
-    void GetPoints()
+    public void GetPoints()
     {
-        int point = 0;
        foreach(Bone bone in bones)
-        { 
-            if ( bone.Color == new Color(1,0.5f, 0f,1.0f))
-            {
-                point += bone.points;
-            }
-        }
-        Debug.Log(point);
+       {
+            if (bone.owner == null) continue;
 
+            PlayerInteraction pInteraction = Game.Singleton.Players.Find(p => bone.owner == p);
+            pInteraction.Score += bone.points;
+       }
     }
     // Start is called before the first frame update
     void Update()
     {
 
-        if ( Input.GetKeyDown(KeyCode.B))
-        {
-            GetPoints();
-        }
+      
         //byte[] fileData;
         //Tile wallTile = TilesResourcesLoader.GetWallTile();
         //Tile groundTile = TilesResourcesLoader.GetGroundTile();

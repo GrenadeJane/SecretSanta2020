@@ -35,7 +35,7 @@ public  class MapHelper : MonoBehaviour
 
     private void Start()
     {
-       LoadMap("/Resources/map/map_1.png");
+       LoadMap("/maps/map.png");
        PlaceBones(60);
     }
 
@@ -147,20 +147,18 @@ public  class MapHelper : MonoBehaviour
         Tile wallTile = TilesResourcesLoader.GetWallTile();
         Tile groundTile = TilesResourcesLoader.GetGroundTile();
 
-        string path = Application.dataPath + filePath;
-        if (File.Exists(path))
+        string path = System.IO.Directory.GetCurrentDirectory() + filePath;
+        if (System.IO.File.Exists(path))
         {
-            fileData = File.ReadAllBytes(path);
+            fileData = System.IO.File.ReadAllBytes(path);
             _ground = new Texture2D(2, 2);
             _ground.LoadImage(fileData); //..this will auto-resize the texture dimensions.
         }
-        Vector3 cellSize = _tilemaps[0].editorPreviewSize;
         for (int i = 0; i < _ground.width; i++)
         {
             for (int j = 0; j < _ground.height; j++)
             {
                 Color color = _ground.GetPixel(i, j);
-                Debug.Log(color);
 
                 if (color == Color.black)
                 {
